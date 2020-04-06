@@ -5,6 +5,11 @@ pd.set_option('display.max_colwidth', -1)
 
 df = pd.read_csv('jeopardy.csv')
 
+
+# Renaming misformatted columns
+df = df.rename(columns = {" Air Date": "Air Date", " Round" : "Round", " Category": "Category",
+                                    " Value": "Value", " Question":"Question", " Answer": "Answer"})
+
 #print(df['Answer'])
 
 #Write a function that filters the dataset for questions that contains all of the words in a list of words. For example, when the list ["King", "England"] was passed to our function, the function returned a DataFrame of 152 rows. Every row had the strings "King" and "England" somewhere in its " Question".
@@ -120,12 +125,3 @@ def check_answer():
 print(check_answer())
 
 #Thanks, You can use this code as much as you want and also you can add more features to this code in this repository
-
-def q_a ():
-    random_question = df['Question'].sample()
-    quest_as_list = random_question.tolist()
-    string_q = " "
-    return (string_q.join(quest_as_list))
-question = q_a()
-print("Question: " + question)
-response = input("Enter Your Answer Here: ")
