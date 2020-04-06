@@ -118,3 +118,14 @@ def check_answer():
     response_string = " "
     return (response_string.join(response_list))
 print(check_answer())
+
+#Thanks, You can use this code as much as you want and also you can add more features to this code in this repository
+
+def q_a ():
+    random_question = df['Question'].sample()
+    quest_as_list = random_question.tolist()
+    string_q = " "
+    return (string_q.join(quest_as_list))
+question = q_a()
+print("Question: " + question)
+response = input("Enter Your Answer Here: ")
