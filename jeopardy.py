@@ -54,11 +54,18 @@ def unique_ans():
 
 # Investigate the ways in which questions change over time by filtering by the date. How many questions from the 90s use the word "Computer" compared to questions from the 2000s?
 
-df["Air Date"] = pd.to_datetime(df["Air Date"])
+df["Air Date"] = pd.to_datetime(df["Air Date"]) # convert the date column to pd datetime
+
+# checking the number of time they used the word "Computer" during the 90s
 def word_computer_90s(date, word):
+    #filter the df date column with the argument date and check if the date is less or equal to 2000-01-01
+    # because if the argument date is 2000 that means we are checking for 90s then check the statement for less
+    # condition but if the argument date is less than 2000-01-01 then check the statement for greater than the argument
     f_date = df[df["Air Date"].apply(lambda x: x < pd.Timestamp(date)if date >= '2000-01-01' else
     x>pd.Timestamp(date))]
     #f_date = df[df["Air Date"] < pd.Timestamp(date)] # old line of code
+
+    # Check the "Question" column if it contains the word argument
     filter_comp_90s = f_date[f_date["Question"].map(lambda x:x if type(x) != str else x.lower()).str.contains(
         word.lower(
 
@@ -68,17 +75,18 @@ def word_computer_90s(date, word):
 
 filtered_comp_90s = word_computer_90s('2000-01-01', "Computer")
 #print(filtered_comp_90s['Question'])
-num_of_computer_90s = len(filtered_comp_90s['Question'])
+num_of_computer_90s = len(filtered_comp_90s['Question']) # number of questions that used the word computer in 90s
 
+# This function check for the use of the word computer during 2000s
 def word_computer_2000s(date, word):
-    filter_w_2000s = word_computer_90s(date, word)
+    filter_w_2000s = word_computer_90s(date, word) # calling the previous function
     return filter_w_2000s
 
 filtered_2000s = word_computer_2000s('1999-12-31', 'Computer')
 
-num_of_computer_2000s = len(filtered_2000s['Question'])
+num_of_computer_2000s = len(filtered_2000s['Question']) # number of questions with the word computer in 2000s
 
-num_of_computers_used = [num_of_computer_90s, num_of_computer_2000s]
+num_of_computers_used = [num_of_computer_90s, num_of_computer_2000s] # list of the various numbers
 labels = ['Use of Word Computer 90s', 'Use of Word Computer 2000s']
 plt.pie(num_of_computers_used, labels=labels, autopct='%0.1f%%')
 plt.axis('equal')
@@ -88,7 +96,10 @@ plt.title("Comparing the use of the word Computer in 90s and in 2000s")
 
 # Is there a connection between the round and the category? Are you more likely to find certain categories, like "Literature" in Single Jeopardy or Double Jeopardy?
 
-rounds = ['Jeopardy!', 'Double Jeopardy!', 'Final Jeopardy!', 'Tiebreaker']
+rounds = ['Jeopardy!', 'Double Jeopardy!', 'Final Jeopardy!', 'Tiebreaker'] # list of the different rounds in the df
+
+# This loop will loop through the rounds list and use the name of each round to filter the round column of the df
+# and then count the unique values categories associated to that round
 for round in rounds:
     new_df = df[df.Round == round]
     unique_category = new_df['Category'].value_counts().to_dict()
@@ -100,28 +111,31 @@ for round in rounds:
 # Build a system to quiz yourself. Grab random questions, and use the input function to get a response from the user. Check to see if that response was right or wrong. Note that you can’t do this on the Codecademy platform — to do this, download the data, and write and run the code on your own computer!
 
 def q_a ():
-    random_question = df['Question'].sample()
-    quest_as_list = random_question.tolist()
-    string_q = " "
-    return (string_q.join(quest_as_list))
+    random_question = df['Question'].sample() # sample() is used to sample a random row from question column
+
+    quest_as_list = random_question.tolist() #convert the question column to a list
+    string_q = " " # declare and empty string which will be use to collect the question as a string
+    return (string_q.join(quest_as_list)) # returning the empty string join with the list question
 question = q_a()
 print("Question: " + question)
 response = input("Enter Your Answer Here: ")
 
+# function to check the answer against the user response
 def check_answer():
-    filter_df = df[df["Question"] == question]
-    price_won = float(filter_df["value_float"].to_string(index=False))
-    confirm_ans = filter_df["Answer"].apply(lambda row: "Very Good, You Got the Answer Right, you won ${:.2f}".format(
-        price_won) if
+    filter_df = df[df["Question"] == question] # filter the df to find the randomly generated question
+    price_won = filter_df["Value"].to_string(index=False) #since the df has been filter, we take the row in the Value
+    # column and convert it to string
+
+    # this check the response of the user against the answer value in the answer column to see if they match
+    confirm_ans = filter_df["Answer"].apply(lambda row: "Very Good, You Got the Answer Right, you won"+
+        price_won if
     row.lower(
 
     ) ==
                                                                                                  response.lower() else
     "You entered the wrong "
-                                                                                         "answer ")
-    response_list = confirm_ans.tolist()
-    response_string = " "
-    return (response_string.join(response_list))
+                                                                                         "answer ").to_string(index=False)
+    return confirm_ans
 print(check_answer())
 
 #Thanks, You can use this code as much as you want and also you can add more features to this code in this repository
